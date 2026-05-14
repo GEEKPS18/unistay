@@ -1,11 +1,69 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import "../../App.css"
 import "../../index.css"
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import heroImage from "../../assets/images/bwb_jm_lnjh.jpg__1320x740_q95_crop_subsampling-2_upscale.jpg";
+import api from "../../lib/api.js";
 
 function Home() {
+  const navigate = useNavigate();
+  const [allProperties, setAllProperties] = useState([]);
+  const [showProperties, setShowProperties] = useState(false);
+  const [textSearch, setTextSearch] = useState("");
+  const [loadingProperties, setLoadingProperties] = useState(false);
+  const [loadingAI, setLoadingAI] = useState(false);
+
+  const filteredProperties = allProperties.filter((p) => {
+    const q = textSearch.toLowerCase();
+    return (
+      (p.title || "").toLowerCase().includes(q) ||
+      (p.address || "").toLowerCase().includes(q) ||
+      (p.neighborhood || "").toLowerCase().includes(q)
+    );
+  });
+
+  const handleBrowseAll = async () => {
+    if (allProperties.length > 0) {
+      setShowProperties(true);
+      document.getElementById("results-section")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    try {
+      setLoadingProperties(true);
+      const res = await api.get("/residence");
+      setAllProperties(res.data.residences || []);
+      setShowProperties(true);
+      setTimeout(() => {
+        document.getElementById("results-section")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } catch {
+      alert("تعذّر تحميل السكنات");
+    } finally {
+      setLoadingProperties(false);
+    }
+  };
+
+  const handleAISearch = async (event) => {
+    event.preventDefault();
+    const query = event.target.preferences.value.trim();
+    if (!query) {
+      alert("يرجى وصف السكن الذي تبحث عنه");
+      return;
+    }
+    try {
+      setLoadingAI(true);
+      const res = await api.post("/residence/ai-search", { query });
+      navigate("/ai-results", { state: { results: res.data.results, query } });
+    } catch {
+      alert("فشل البحث الذكي، يرجى المحاولة لاحقاً");
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
   return (
     <>
       <section className="hero">
@@ -37,7 +95,7 @@ function Home() {
             </p>
           </div>
 
-          <form className="search-box" id="search-section">
+          <form className="search-box" id="search-section" onSubmit={handleAISearch}>
             <div className="search-field">
               <label htmlFor="campus">الحرم الجامعي</label>
               <select id="campus" name="campus" defaultValue="">
@@ -120,16 +178,98 @@ function Home() {
             </div>
 
             <div className="search-action">
-              <button type="submit" className="search-btn">
-                ابحث الان
+              <button type="submit" className="search-btn" disabled={loadingAI}>
+                {loadingAI ? "جاري البحث..." : "ابحث بالذكاء الاصطناعي"}
               </button>
             </div>
           </form>
         </div>
       </section>
 
-      <section className="results-section" id="results-section">
-        <div className="results-grid"></div>
+      <section className="results-section" id="results-section" style={{ padding: "40px 20px", backgroundColor: "#f8f9fa" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+
+          {/* Browse all button */}
+          <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <h2 style={{ color: "#1b2a41", fontWeight: 700, margin: 0 }}>
+              السكنات المتاحة
+            </h2>
+            <button
+              className="btn"
+              style={{ backgroundColor: "#1b2a41", color: "white", borderRadius: "8px", minWidth: "160px" }}
+              onClick={handleBrowseAll}
+              disabled={loadingProperties}
+            >
+              {loadingProperties ? "جاري التحميل..." : "عرض كل السكنات"}
+            </button>
+          </div>
+
+          {/* Text search filter */}
+          {showProperties && (
+            <div className="mb-4">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="ابحث بالاسم أو العنوان أو الحي..."
+                value={textSearch}
+                onChange={(e) => setTextSearch(e.target.value)}
+                style={{ maxWidth: "400px", borderRadius: "8px", direction: "rtl" }}
+              />
+            </div>
+          )}
+
+          {/* Properties grid */}
+          {showProperties && (
+            filteredProperties.length === 0 ? (
+              <p style={{ color: "gray", textAlign: "center", padding: "40px 0" }}>
+                {textSearch ? "لا توجد نتائج مطابقة" : "لا توجد سكنات متاحة حالياً"}
+              </p>
+            ) : (
+              <div className="row g-4">
+                {filteredProperties.map((p) => (
+                  <div className="col-12 col-sm-6 col-lg-4" key={p.res_id}>
+                    <div
+                      className="card h-100 shadow-sm"
+                      style={{ borderRadius: "12px", overflow: "hidden", border: "none", cursor: "pointer" }}
+                      onClick={() => navigate(`/details/${p.res_id}`)}
+                    >
+                      {p.ResidenceImages?.[0]?.image_url ? (
+                        <img
+                          src={`http://localhost:3000${p.ResidenceImages[0].image_url}`}
+                          alt={p.title || p.address}
+                          style={{ height: "180px", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <div style={{ height: "180px", backgroundColor: "#e9ecef", display: "flex", alignItems: "center", justifyContent: "center", color: "gray" }}>
+                          لا توجد صورة
+                        </div>
+                      )}
+                      <div className="card-body">
+                        <h6 style={{ color: "#1b2a41", fontWeight: 600 }}>
+                          {p.title || p.address}
+                        </h6>
+                        <p style={{ color: "gray", fontSize: "0.85rem", marginBottom: "8px" }}>
+                          📍 {p.address}
+                        </p>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span style={{ fontWeight: 700, color: "#1b2a41" }}>
+                            {p.rent_price} شيكل / شهر
+                          </span>
+                          {p.distance_from_university && (
+                            <span style={{ color: "gray", fontSize: "0.8rem" }}>
+                              🏫 {p.distance_from_university} دق
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+
+        </div>
       </section>
 
       <section className="features-section" id="why-us">

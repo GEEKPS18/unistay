@@ -68,9 +68,9 @@ const AllResidence = () => {
                         {data.map((hotel) => (
                             <div className="col-6 col-md-4 col-lg-4 mb-4" key={hotel?.id}>
                                 <div className="card me-2" style={{ cursor: "pointer", color: "#1b2a41" }} >
-                                    <img src={hotel?.ResidenceImages[0]?.image_url} style={{ aspectRatio: "14/15" }} alt={hotel?.name} />
+                                    <img src={hotel?.ResidenceImages[0]?.image_url} style={{ aspectRatio: "14/15" }} alt={hotel?.title || hotel?.address} />
                                     <div className="card-body bg-light">
-                                        <h5 className="card-title">{hotel?.name}</h5>
+                                        <h5 className="card-title">{hotel?.title || hotel?.address}</h5>
                                         <div className="d-flex w-100 justify-content-around ">
 
                                              <button className="btn" style={{width:"80%",

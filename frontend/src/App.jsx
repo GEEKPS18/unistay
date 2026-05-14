@@ -36,6 +36,8 @@ import PropertiesPage from "./pages/properties/Propertiespage.jsx";
 
 import RequestsPage from "./pages/requests/Requestspage.jsx";
 
+import AiResults from "./pages/AiResults/AiResults.jsx";
+
 import OwnersPage from "./pages/Owner/ownersPages.jsx";
 
 import StudentsPage from "./pages/Student/Studentspage.jsx";
@@ -69,6 +71,8 @@ function App() {
           path="/wishlist"
           element={<WishList />}
         />
+
+        <Route path="/ai-results" element={<AiResults />} />
 
         <Route
           path="/details/:id"

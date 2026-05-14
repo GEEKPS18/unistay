@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../../lib/api.js";
 import "./AddProperty.css";
 import Header from "../../components/Header/Header.jsx";
 import Footer from "../../components/Footer/FooterPages.jsx";
@@ -15,6 +17,8 @@ import {
 } from "react-icons/fa6";
 
 function AddProperty() {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -59,7 +63,7 @@ function AddProperty() {
     setSelectedFiles(files);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setErrorMessage("");
 
@@ -78,7 +82,39 @@ function AddProperty() {
       return;
     }
 
-    alert("تم تجهيز البيانات للنشر");
+    try {
+      setIsSubmitting(true);
+
+      const body = new FormData();
+      body.append("title", formData.title);
+      body.append("description", formData.description);
+      body.append("housing_type", formData.housingType);
+      body.append("available_for", formData.availableFor);
+      body.append("address", formData.address);
+      body.append("neighborhood", formData.neighborhood);
+      body.append("rent_price", formData.monthlyPrice);
+      body.append("distance_from_university", formData.distanceFromUniversity);
+      body.append("capacity", formData.capacity);
+      body.append("rooms", formData.rooms);
+      body.append("bathrooms", formData.bathrooms);
+      body.append("wifi", services.wifi);
+      body.append("parking", services.parking);
+      body.append("security", services.security);
+      selectedFiles.forEach((file) => body.append("images", file));
+
+      await api.post("/residence/add", body, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      alert("تم نشر الإعلان بنجاح!");
+      navigate("/all-residence");
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.message || "حدث خطأ أثناء نشر الإعلان"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -304,8 +340,8 @@ function AddProperty() {
 
             {errorMessage && <p id="error-message">{errorMessage}</p>}
 
-            <button type="submit" className="publish-btn">
-              نشر الإعلان
+            <button type="submit" className="publish-btn" disabled={isSubmitting}>
+              {isSubmitting ? "جاري النشر..." : "نشر الإعلان"}
             </button>
           </form>
         </div>

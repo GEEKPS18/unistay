@@ -39,8 +39,28 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
 
+      title: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+
       description: {
         type: DataTypes.TEXT,
+        allowNull: true,
+      },
+
+      housing_type: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+      },
+
+      available_for: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+      },
+
+      neighborhood: {
+        type: DataTypes.STRING(100),
         allowNull: true,
       },
 
@@ -70,6 +90,41 @@ module.exports = (sequelize, DataTypes) => {
       building_num: {
         type: DataTypes.STRING(50),
         allowNull: true,
+      },
+
+      distance_from_university: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      capacity: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      rooms: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      bathrooms: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      wifi: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+
+      parking: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+
+      security: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
 
       owner_id: {

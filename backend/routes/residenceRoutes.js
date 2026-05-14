@@ -6,6 +6,7 @@ const {
   getResidenceById,
   updateResidence,
   deleteResidence,
+  aiSearch,
 } = require("../controllers/residenceController");
 
 const { protect, authorizeRoles } = require("../middlewares/authMiddleware");
@@ -39,21 +40,17 @@ router.post(
   addResidence,
 );
 
+/* ================= AI SEARCH ================= */
+
+router.post("/ai-search", aiSearch);
+
 /* ================= GET ALL RESIDENCES ================= */
 
-router.get(
-  "/",
-
-  getAllResidences,
-);
+router.get("/", getAllResidences);
 
 /* ================= GET RESIDENCE BY ID ================= */
 
-router.get(
-  "/:id",
-
-  getResidenceById,
-);
+router.get("/:id", getResidenceById);
 
 /* ================= UPDATE RESIDENCE ================= */
 

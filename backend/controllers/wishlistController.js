@@ -30,7 +30,7 @@ const getAllWishedList=async(req,res)=>{
 const addToWishlist=async(req,res)=>{
     try{
         const student=await db.Student.findByPk(req.params.studentId)
-        if(!user){
+        if(!student){
             return res.status(401).json({message:"User not found!"})
         }
         const residence=await db.Residence.findByPk(req.params.residenceId)
@@ -51,7 +51,7 @@ const addToWishlist=async(req,res)=>{
 const removeFromWishlist=async(req,res)=>{
     try{
         const student=await db.Student.findByPk(req.params.studentId)
-        if(!user){
+        if(!student){
             return res.status(401).json({message:"User not found!"})
         }
         const residence=await db.Residence.findByPk(req.params.residenceId)
