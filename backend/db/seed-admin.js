@@ -34,6 +34,11 @@ const ADMIN_PASSWORD = 'Admin@1234';
       role:       'admin',
     });
 
+    await db.Admin.create({
+      user_id:     admin.user_id,
+      permissions: 'all',
+    });
+
     console.log(`Admin created successfully!`);
     console.log(`  ID:       ${admin.user_id}`);
     console.log(`  Email:    ${ADMIN_EMAIL}`);

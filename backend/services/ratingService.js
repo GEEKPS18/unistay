@@ -16,8 +16,8 @@ const postRating = async (data) => {
   return db.Rating.create({
     user_id: data.user_id,
     res_id: data.res_id,
-    rateDate: new Date(),
-    starCount: data.starCount || null,
+    rate_date: new Date(),
+    star_count: data.star_count || null,
     comment: data.comment || null,
     issues: data.issues || null,
   });

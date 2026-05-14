@@ -13,8 +13,8 @@ const InputAndSubmet = (props) => {
       if (!studentId) return
 
       const body = props.tab === "comments"
-        ? { starCount: null, comment: inputValue, issues: null }
-        : { starCount: null, comment: null, issues: inputValue }
+        ? { star_count: null, comment: inputValue, issues: null }
+        : { star_count: null, comment: null, issues: inputValue }
 
       const res = await api.post(
         `/residence/${props.residenceId}/Ratings/student/${studentId}/`,

@@ -56,7 +56,7 @@ const postRating = async (req, res, next) => {
     const rating = await ratingService.postRating({
       user_id: req.params.studentId,
       res_id: req.params.residenceId,
-      starCount: req.body.starCount,
+      star_count: req.body.star_count,
       comment: req.body.comment,
       issues: req.body.issues,
     });

@@ -2,7 +2,7 @@ const { body, param } = require('express-validator');
 
 const postRules = [
   // At least one of starCount, comment, or issues must be provided
-  body('starCount')
+  body('star_count')
     .optional()
     .isInt({ min: 1, max: 5 }).withMessage('Star count must be between 1 and 5'),
 

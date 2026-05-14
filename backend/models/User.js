@@ -13,8 +13,12 @@ module.exports = (sequelize, DataTypes) => {
        */
 
       User.hasOne(models.Owner, {
-        foreignKey: "user_id",
-        onDelete: "CASCADE",
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE',
+      });
+      User.hasOne(models.Admin, {
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE',
       });
     }
   }

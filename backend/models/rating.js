@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   Rating.init({
     user_id: DataTypes.INTEGER,
     res_id: DataTypes.INTEGER,
-    rateDate: DataTypes.DATE,
-    starCount: DataTypes.INTEGER,
+    rate_date: DataTypes.DATE,
+    star_count: DataTypes.INTEGER,
     comment: DataTypes.TEXT,
     issues: DataTypes.TEXT
   }, {

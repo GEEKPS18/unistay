@@ -29,7 +29,7 @@ const InputField = (props) => {
           {props.tab==="comments"&&comm.comment!==null &&
           <div>
             <CommentSection data={comm} i={i} setData={setData} residenceId={props.residenceId}></CommentSection>
-            <span style={{color:"gray", fontSize:"0.9rem"}}>{new Date(comm.rateDate).toLocaleString('en-US', {
+            <span style={{color:"gray", fontSize:"0.9rem"}}>{new Date(comm.rate_date).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -45,7 +45,7 @@ const InputField = (props) => {
           <div>
 
             <IssueSection data={comm} i={i} setData={setData} residenceId={props.residenceId}></IssueSection>
-            <span style={{color:"gray", fontSize:"0.9rem"}}>{new Date(comm.rateDate).toLocaleString('en-US', {
+            <span style={{color:"gray", fontSize:"0.9rem"}}>{new Date(comm.rate_date).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',

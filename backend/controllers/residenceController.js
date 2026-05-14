@@ -36,7 +36,7 @@ const addResidence = async (req, res, next) => {
       wifi: wifi === true || wifi === 'true',
       parking: parking === true || parking === 'true',
       security: security === true || security === 'true',
-      owner_id: req.user.id,
+      user_id: req.user.id,
     });
 
     if (req.files && req.files.length > 0) {
@@ -116,7 +116,7 @@ const updateResidence = async (req, res, next) => {
     }
 
     // Prevent an owner from editing another owner's listing
-    if (residence.owner_id !== req.user.id) {
+    if (residence.user_id !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You are not authorised to edit this listing',
@@ -151,7 +151,7 @@ const deleteResidence = async (req, res, next) => {
       });
     }
 
-    if (residence.owner_id !== req.user.id) {
+    if (residence.user_id !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You are not authorised to delete this listing',
