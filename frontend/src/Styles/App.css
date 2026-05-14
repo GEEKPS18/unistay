@@ -1,0 +1,69 @@
+/* الخط */
+body {
+  font-family: "Alyamama", sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* العناوين */
+h1, h5 {
+  color: #1B2A41;
+}
+
+/* الكارد */
+.card {
+  border-radius: 14px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(55, 39, 137, 0.05);
+}
+
+/* labels */
+.form-label {
+  color: #1B2A41;
+  font-weight: 500;
+}
+
+/* inputs */
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+/* focus */
+.form-control:focus,
+.form-select:focus {
+  border-color: #1B2A41;
+  box-shadow: 0 0 0 0.1rem rgba(27, 42, 65, 0.2);
+}
+
+/* نص رمادي */
+.text-muted {
+  color: #abaaaa !important;
+}
+
+/* زر إلغاء */
+.btn-secondary {
+  background-color: #abaaaa;
+  border: none;
+}
+
+/* زر نشر */
+.btn-publish {
+  background-color: #1B2A41;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.btn-publish:hover {
+  background-color: #5d6674;
+}
+
+/* upload box */
+.upload-box {
+  border: 2px dashed #ddd;
+  padding: 30px;
+  border-radius: 12px;
+}

@@ -1,0 +1,292 @@
+.footer {
+  background: linear-gradient(
+    180deg,
+    #1b2a41 0%,
+    #162235 100%
+  );
+
+  padding: 70px 0 22px;
+
+  color: white;
+
+  font-family: "Cairo", sans-serif;
+
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ================= CONTAINER ================= */
+
+.footer-container {
+  width: 100%;
+  max-width: 1280px;
+
+  margin: 0 auto;
+  padding: 0 34px;
+}
+
+/* ================= MAIN ================= */
+
+.footer-main {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+
+  gap: 45px;
+
+  padding-bottom: 38px;
+}
+
+/* ================= BRAND ================= */
+
+.footer-brand {
+  max-width: 340px;
+}
+
+.footer-logo-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  text-decoration: none;
+
+  margin-bottom: 18px;
+}
+
+.footer-logo {
+  width: 55px;
+  height: 55px;
+
+  border-radius: 16px;
+
+  object-fit: cover;
+
+  background: rgba(255,255,255,0.95);
+  padding: 3px;
+}
+
+.footer-brand-text h2 {
+  font-size: 34px;
+  font-weight: 800;
+
+  color: white;
+
+  margin-bottom: 2px;
+}
+
+.footer-brand-text span {
+  font-size: 13px;
+  font-weight: 500;
+
+  color: #d4d4d4;
+}
+
+.footer-description {
+  font-size: 15px;
+  line-height: 2;
+
+  color: #ececec;
+
+  font-weight: 400;
+}
+
+/* ================= TITLES ================= */
+
+.footer-links-box h3,
+.footer-contact-box h3,
+.footer-social-box h3 {
+  font-size: 21px;
+  font-weight: 700;
+
+  margin-bottom: 20px;
+
+  color: white;
+}
+
+/* ================= LINKS ================= */
+
+.footer-links-box ul,
+.footer-contact-box ul {
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+.footer-links-box li,
+.footer-contact-box li {
+  margin-bottom: 13px;
+}
+
+.footer-links-box a,
+.footer-contact-box li {
+  text-decoration: none;
+
+  color: #dddddd;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  transition: 0.3s ease;
+}
+
+.footer-links-box a:hover {
+  color: #ffd54f;
+
+  padding-right: 3px;
+}
+
+/* ================= SOCIAL ================= */
+
+.footer-social {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-social a {
+  width: fit-content;
+
+  padding: 10px 18px;
+
+  border-radius: 12px;
+
+  background: rgba(255,255,255,0.08);
+
+  text-decoration: none;
+
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: 0.3s ease;
+}
+
+.footer-social a:hover {
+  background: rgba(255,255,255,0.16);
+
+  transform: translateY(-2px);
+}
+
+/* ================= BOTTOM ================= */
+
+.footer-bottom {
+  padding-top: 22px;
+
+  border-top: 1px solid rgba(255,255,255,0.1);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.footer-bottom p {
+  font-size: 13px;
+  font-weight: 500;
+
+  color: #d8d8d8;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Tablet (1024px وأقل) */
+@media (max-width: 1024px) {
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+
+  .footer-brand {
+    max-width: 100%;
+    grid-column: 1 / -1;
+  }
+}
+
+/* Tablet صغير (768px وأقل) */
+@media (max-width: 768px) {
+  .footer {
+    padding: 50px 0 18px;
+  }
+
+  .footer-container {
+    padding: 0 22px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding-bottom: 28px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-brand-text h2 {
+    font-size: 28px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+}
+
+/* Mobile (480px وأقل) */
+@media (max-width: 480px) {
+  .footer {
+    padding: 40px 0 16px;
+  }
+
+  .footer-container {
+    padding: 0 16px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-bottom: 24px;
+  }
+
+  .footer-brand {
+    grid-column: unset;
+  }
+
+  .footer-logo {
+    width: 46px;
+    height: 46px;
+  }
+
+  .footer-brand-text h2 {
+    font-size: 24px;
+  }
+
+  .footer-description {
+    font-size: 14px;
+  }
+
+  .footer-links-box h3,
+  .footer-contact-box h3,
+  .footer-social-box h3 {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .footer-links-box a,
+  .footer-contact-box li {
+    font-size: 14px;
+  }
+
+  .footer-social a {
+    font-size: 13px;
+    padding: 9px 16px;
+  }
+
+  .footer-bottom p {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "unistay",
+  "version": "1.0.0",
+  "description": "UniStay monorepo — frontend (React/Vite) + backend (Express/Sequelize)",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "install:all": "npm --prefix frontend install && npm --prefix backend install",
+    "build": "npm --prefix frontend run build"
+  }
+}

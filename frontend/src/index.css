@@ -1,0 +1,20 @@
+:root {
+  --primary-color: #1b2a41;
+  --secondary-color: #abaaaa;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Alyamama", sans-serif;
+}
+
+body {
+  direction: rtl;
+  /* background-color: var(--primary-color); */
+}
