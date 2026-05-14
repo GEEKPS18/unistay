@@ -1,12 +1,16 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+
+const UPLOAD_DIR = path.join(__dirname, "../uploads/residences");
+fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 /**
  * Configure storage location and file naming for residence images.
  */
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/residences");
+    cb(null, UPLOAD_DIR);
   },
 
   filename: (req, file, cb) => {
