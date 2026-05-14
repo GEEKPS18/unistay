@@ -29,7 +29,8 @@ const loginRules = [
   body('email')
     .trim()
     .notEmpty().withMessage('Email is required')
-    .isEmail().withMessage('Must be a valid email address'),
+    .isEmail().withMessage('Must be a valid email address')
+    .normalizeEmail(),
 
   body('password')
     .notEmpty().withMessage('Password is required'),
