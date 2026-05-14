@@ -42,7 +42,7 @@ const addToWishlist = async (req, res, next) => {
     }
 
     await wishlistService.addToWishList({
-      user_Id: req.params.studentId,
+      user_id: req.params.studentId,
       res_id: req.params.residenceId,
     });
 
