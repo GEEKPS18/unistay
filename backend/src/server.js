@@ -1,6 +1,7 @@
 
 
 const express=require('express')
+const path=require('path')
 const app=express()
 const db=require('../models')
 const cors =require('cors')
@@ -17,6 +18,7 @@ const PORT=3000;
 
 app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(express.json())
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 
 app.use('/residence/:residenceId/Ratings',Ratingrouter)

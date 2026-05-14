@@ -3,6 +3,7 @@ const express = require("express");
 const {
   addResidence,
   getAllResidences,
+  getResidenceById,
   updateResidence,
   deleteResidence,
 } = require("../controllers/residenceController");
@@ -44,6 +45,14 @@ router.get(
   "/",
 
   getAllResidences,
+);
+
+/* ================= GET RESIDENCE BY ID ================= */
+
+router.get(
+  "/:id",
+
+  getResidenceById,
 );
 
 /* ================= UPDATE RESIDENCE ================= */

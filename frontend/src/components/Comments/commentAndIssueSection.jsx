@@ -2,76 +2,19 @@ import { useEffect, useState } from "react"
 import InputAndSubmet from "./inputAndSubmit"
 import CommentSection from "./commentSection"
 import IssueSection from "./issueSection"
+import api from "../../lib/api.js"
 
 const InputField = (props) => {
   const [data,setData]=useState([])
-  
-  const [commentSetting, setCommentSetting] = useState(null)
- 
 
-  const handleCommentSettings = (index) => {
-    setCommentSetting(commentSetting === index ? null : index)
-  }
-
-
-const handleDeleteComment=async(id)=>{
-    try{
-     
-      const response=await fetch(`http://localhost:3000/Ratings/${id}/comment`,{
-        method:"DELETE"
-        
-      })
-       
-      if (!response.ok) {
-        throw new Error("Failed to delete comment");
-        console.log("Error")
-      }
-      
-      setData(prev => prev.filter(c => c.id !== id));
-    }
-    catch(error){
-      console.log("E")
-      console.error("Error deleting comment:", error);
-    }
-}
-
-
-const handleDeleteIssue=async(id)=>{
-    try{
-     
-      const response=await fetch(`http://localhost:3000/Ratings/${id}/issue`,{
-        method:"DELETE"
-        
-      })
-        
-      if (!response.ok) {
-        throw new Error("Failed to delete issue");
-        console.log("Error")
-      }
-      
-      setData(prev => prev.filter(c => c.id !== id));
-    }
-    catch(error){
-      
-      console.error("Error deleting comment:", error);
-    }
-}
-
-
-
-  const ratingType=[
-    "comments",
-    "issues",
-    "stars"
-  ]
   useEffect(()=>{
+    if (!props.residenceId) return
     const getData=async()=>{
-      const res=await fetch('http://localhost:3000/residence/1/Ratings')
-      const data=await res.json()
-      setData(data)
+      const res = await api.get(`/residence/${props.residenceId}/Ratings`)
+      setData(res.data)
     }
     getData()
-  },[])
+  },[props.residenceId])
   
 
   return (
@@ -83,9 +26,9 @@ const handleDeleteIssue=async(id)=>{
   
           <div  key={i} >
 
-          {props.tab==="comments"&&comm.comment!==null && 
+          {props.tab==="comments"&&comm.comment!==null &&
           <div>
-            <CommentSection data={comm} i={i} setData={setData}></CommentSection> 
+            <CommentSection data={comm} i={i} setData={setData} residenceId={props.residenceId}></CommentSection>
             <span style={{color:"gray", fontSize:"0.9rem"}}>{new Date(comm.rateDate).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -101,7 +44,7 @@ const handleDeleteIssue=async(id)=>{
           {props.tab==="issues" && comm.issues!==null&& 
           <div>
 
-            <IssueSection data={comm} i={i} setData={setData} ></IssueSection>
+            <IssueSection data={comm} i={i} setData={setData} residenceId={props.residenceId}></IssueSection>
             <span style={{color:"gray", fontSize:"0.9rem"}}>{new Date(comm.rateDate).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -119,7 +62,7 @@ const handleDeleteIssue=async(id)=>{
 
     </ul>
     
-      <InputAndSubmet content={props.content} tab={props.tab} data={data} setData={setData} ></InputAndSubmet>
+      <InputAndSubmet content={props.content} tab={props.tab} data={data} setData={setData} residenceId={props.residenceId}></InputAndSubmet>
       
     </>
   )

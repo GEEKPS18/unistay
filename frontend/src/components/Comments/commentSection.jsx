@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../../lib/api.js";
 
 const CommentSection = (props) => {
   const [commentSetting, setCommentSetting] = useState(null);
@@ -11,10 +12,9 @@ const CommentSection = (props) => {
 
   const handleDeleteComment = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/residence/1/Ratings/${id}/student/1/`, {
-        method: "DELETE"
-      })
-      if (!response.ok) throw new Error("Failed to delete comment");
+      const student = JSON.parse(localStorage.getItem("student"))
+      const studentId = student?.id
+      await api.delete(`/residence/${props.residenceId}/Ratings/${id}/student/${studentId}/comment`)
       props.setData(prev => prev.filter(c => c.id !== props.data.id));
     } catch (error) {
       console.error("Error deleting comment:", error);
@@ -23,18 +23,7 @@ const CommentSection = (props) => {
 
   const handleUpdateComment = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/Ratings/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ comment: editValue }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update comment");
-      }
+      await api.put(`/residence/${props.residenceId}/Ratings/${id}`, { comment: editValue })
 
       props.setData((prev) =>
         prev.map((c) =>

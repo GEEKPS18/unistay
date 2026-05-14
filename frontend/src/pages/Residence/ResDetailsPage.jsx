@@ -7,6 +7,7 @@ import MobileContactBar from "../../components/Contact/MobileContactBar.jsx";
 import Footer from "../../components/Footer/Footer.jsx";
 import Feedback from "../../components/Comments/feedback.jsx";
 import ImagesCarousel from "../../components/Carousel/Carousel.jsx";
+import api from "../../lib/api.js";
 
 const ResDetails = () => {
     const { id } = useParams()
@@ -17,14 +18,8 @@ const ResDetails = () => {
 
     useEffect(() => {
         const getHotel = async () => {
-            const res = await fetch(`http://localhost:3000/residence/${id}`)
-            if (!res.ok) {
-                console.log("API error:", res.status)
-                return
-            }
-            const data = await res.json()
-            setHotel(data.residence)
-            console.log(hotel)
+            const res = await api.get(`/residence/${id}`)
+            setHotel(res.data.residence)
         }
         if (id) getHotel()
     }, [id])
@@ -291,7 +286,7 @@ const ResDetails = () => {
                     </div>
                 </div>
 
-                {/* <Feedback /> */}
+                <Feedback residenceId={id} />
             </div>
 
             <Footer />

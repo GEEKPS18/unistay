@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../../lib/api.js";
 
 const IssueSection = (props) => {
   const [commentSetting, setCommentSetting] = useState(null);
@@ -11,16 +12,9 @@ const IssueSection = (props) => {
 
   const handleDeleteIssue = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/Ratings/${id}/issue`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to delete issue");
-      }
+      const student = JSON.parse(localStorage.getItem("student"))
+      const studentId = student?.id
+      await api.delete(`/residence/${props.residenceId}/Ratings/${id}/student/${studentId}/issue`)
 
       props.setData((prev) =>
         prev.filter((c) => c.id !== props.data.id)
@@ -32,18 +26,7 @@ const IssueSection = (props) => {
 
   const handleUpdateIssue = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/Ratings/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ issues: editValue }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update issue");
-      }
+      await api.put(`/residence/${props.residenceId}/Ratings/${id}`, { issues: editValue })
 
       props.setData((prev) =>
         prev.map((c) =>

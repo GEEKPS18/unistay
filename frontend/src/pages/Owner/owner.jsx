@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../lib/api.js";
 
 import "../Student/StudentLogin.css";
 import Header from "../../components/Header/Header";
@@ -40,8 +40,8 @@ function Owner() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/owner/login",
+      const response = await api.post(
+        "/owner/login",
         {
           email,
           password,

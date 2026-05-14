@@ -4,6 +4,7 @@ import SideBar from "../../components/Sidbar/SideBar.jsx"
 import MobileSidebar from "../../components/Contact/MobileSidebar.jsx"
 import Header from "../../components/Header/Header.jsx"
 import Footer from "../../components/Footer/Footer.jsx"
+import api from "../../lib/api.js"
 
 const AllResidence = () => {
     const navigate = useNavigate()
@@ -14,10 +15,8 @@ const AllResidence = () => {
      
 
         const getData = async () => {
-            const res = await fetch(`http://localhost:3000/residence`)
-            const data = await res.json()
-            setData(data.residences)
-            console.log(data)
+            const res = await api.get('/residence')
+            setData(res.data.residences)
         }
         getData()
     }, [])

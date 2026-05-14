@@ -2,7 +2,7 @@ import { useState } from "react";
 import InputField from "./commentAndIssueSection.jsx";
 import RatingStars from "./ratingStars.jsx";
 
-const Feedback = () => {
+const Feedback = ({ residenceId }) => {
   const [activeTab, setActiveTab] = useState("comments");
 
   const tabStyle = (tab) => ({
@@ -85,6 +85,7 @@ const Feedback = () => {
           <InputField
             content="Add a comment here..."
             tab="comments"
+            residenceId={residenceId}
           />
         )}
 
@@ -92,6 +93,7 @@ const Feedback = () => {
           <InputField
             content="Add an issue here..."
             tab="issues"
+            residenceId={residenceId}
           />
         )}
 

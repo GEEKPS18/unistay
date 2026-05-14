@@ -1,11 +1,4 @@
-import { useEffect } from "react";
-
 const ContactSidebar=()=>{
-    useEffect(()=>{
-      const getOwnerData=async()=>{
-        const owner=await fetch (`http://localhost:3000/`)
-      }
-    })
 
 
     return(

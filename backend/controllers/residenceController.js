@@ -228,9 +228,39 @@ const deleteResidence = async (req, res) => {
   }
 };
 
+const getResidenceById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const residence = await Residence.findOne({
+      where: { res_id: id },
+      include: [{ model: ResidenceImage }],
+    });
+
+    if (!residence) {
+      return res.status(404).json({
+        success: false,
+        message: 'Residence not found',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      residence,
+    });
+  } catch (error) {
+    console.error('Get Residence By ID Error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};
+
 module.exports = {
   addResidence,
   getAllResidences,
+  getResidenceById,
   updateResidence,
   deleteResidence,
 };

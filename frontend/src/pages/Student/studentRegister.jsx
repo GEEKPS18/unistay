@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../lib/api.js";
 
 import "./Register.css";
 
@@ -66,8 +66,8 @@ function StudentRegister() {
     try {
       /* ================= API REQUEST ================= */
 
-      const response = await axios.post(
-        "http://localhost:3000/api/student/register",
+      const response = await api.post(
+        "/student/register",
         {
           first_name: firstName,
 

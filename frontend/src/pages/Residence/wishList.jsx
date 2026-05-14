@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
+import api from "../../lib/api.js";
 
 const WishList=()=>{
     const[data,setData]=useState([])
     const [liked, setLiked] = useState({})
-    useEffect(() => {
-     
 
+    useEffect(() => {
         const getData = async () => {
-            const res = await fetch("https://api.escuelajs.co/api/v1/categories")
-            const data = await res.json()
-            setData(data)
+            const res = await api.get('/residence')
+            setData(res.data.residences || [])
         }
         getData()
     }, [])
 
-    const handleRemoveFromFavourites=async(id)=>{
-        const wishlist=await fetch(`http://localhost:3000/wishlist/${id}`,{
-           method:"DELETE"
-        })
-        console.log(wishlist.json())
-
+    const handleRemoveFromFavourites = async (residenceId) => {
+        const student = JSON.parse(localStorage.getItem("student"))
+        const studentId = student?.id
+        if (!studentId) return
+        await api.delete(`/residence/${residenceId}/wishlist/student/${studentId}/`)
+        setData(prev => prev.filter(r => r.res_id !== residenceId))
     }
     return(
         <>
@@ -34,14 +33,14 @@ const WishList=()=>{
                                     
 
 
-                                    <img src={hotel?.image} style={{ aspectRatio: "14/15" }} alt={hotel?.name} />
-                                    <div 
+                                    <img src={hotel?.ResidenceImages?.[0]?.image_url} style={{ aspectRatio: "14/15" }} alt={hotel?.address} />
+                                    <div
                                         style={{position:"absolute", top:"1rem",right:"1rem"}}
                                         >
-                                            <i className="bi bi-heart-fill" style={{ fontSize: "35px", position:"relative",bottom:"3.5px" }} onClick={()=>handleRemoveFromFavourites(3)}></i>
+                                            <i className="bi bi-heart-fill" style={{ fontSize: "35px", position:"relative",bottom:"3.5px" }} onClick={()=>handleRemoveFromFavourites(hotel?.res_id)}></i>
                                     </div>
                                     <div className="card-body bg-light">
-                                        <h5 className="card-title">{hotel?.name}</h5>
+                                        <h5 className="card-title">{hotel?.address}</h5>
                                         <div className="d-flex w-100 justify-content-around ">
 
                                              <button className="btn" style={{width:"100%",

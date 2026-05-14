@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../../lib/api.js";
 
 const InputAndSubmet = (props) => {
   const [inputValue, setInputValue] = useState("");
@@ -7,45 +8,21 @@ const InputAndSubmet = (props) => {
     try {
       if (inputValue === "") return;
 
-      if (props.tab === "comments") {
-        const rate = await fetch(`http://localhost:3000/Ratings`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: 1,
-            residentId: 1,
-            starCount: null,
-            comment: inputValue,
-            issues: null,
-          }),
-        });
+      const student = JSON.parse(localStorage.getItem("student"))
+      const studentId = student?.id
+      if (!studentId) return
 
-        const response = await rate.json();
+      const body = props.tab === "comments"
+        ? { starCount: null, comment: inputValue, issues: null }
+        : { starCount: null, comment: null, issues: inputValue }
 
-        props.setData((prev) => [...prev, response]);
-        setInputValue("");
-      } else {
-        const rate = await fetch(`http://localhost:3000/Ratings`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: 1,
-            residentId: 1,
-            starCount: null,
-            comment: null,
-            issues: inputValue,
-          }),
-        });
+      const res = await api.post(
+        `/residence/${props.residenceId}/Ratings/student/${studentId}/`,
+        body
+      )
 
-        const response = await rate.json();
-
-        props.setData((prev) => [...prev, response]);
-        setInputValue("");
-      }
+      props.setData((prev) => [...prev, res.data]);
+      setInputValue("");
 
     } catch (error) {
       console.error(error);

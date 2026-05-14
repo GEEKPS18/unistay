@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../lib/api.js";
 
 import "../Student/Register.css";
 import Header from "../../components/Header/Header";
@@ -58,8 +58,8 @@ function OwnerRegister() {
       const last_name =
         nameParts.slice(1).join(" ") || " ";
 
-      await axios.post(
-        "http://localhost:3000/api/owner/register",
+      await api.post(
+        "/owner/register",
         {
           first_name,
           last_name,
