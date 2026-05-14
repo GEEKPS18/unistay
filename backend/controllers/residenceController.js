@@ -170,7 +170,7 @@ const deleteResidence = async (req, res, next) => {
 };
 
 /**
- * @desc    AI-powered property search using OpenAI
+ * @desc    AI-powered property search (Groq — free tier, OpenAI-compatible API)
  * @route   POST /residence/ai-search
  * @access  Protected (any logged-in user)
  */
@@ -188,7 +188,7 @@ const aiSearch = async (req, res, next) => {
     }
 
     // Build a minimal summary of each property to send to the AI.
-    // Keeping this small reduces token usage and cost.
+    // Keeping this small reduces token usage.
     const list = residences.map((r) => ({
       res_id: r.res_id,
       title: r.title,
@@ -207,7 +207,12 @@ const aiSearch = async (req, res, next) => {
       security: r.security,
     }));
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    // Groq uses the same OpenAI SDK — only the baseURL and model differ.
+    // Get a free API key at console.groq.com
+    const client = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: 'https://api.groq.com/openai/v1',
+    });
 
     const prompt = `You are a student housing assistant. A student is looking for housing.
 
@@ -220,14 +225,16 @@ Return ONLY a valid JSON array of the top 3 best-matching res_id values, ordered
 Example: [4, 12, 7]
 No explanation, no markdown — just the JSON array.`;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+    const completion = await client.chat.completions.create({
+      model: 'llama-3.1-8b-instant',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.2,
     });
 
     const content = completion.choices[0].message.content.trim();
-    const ids = JSON.parse(content);
+    // Strip markdown code fences if the model wraps its answer
+    const cleaned = content.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+    const ids = JSON.parse(cleaned);
 
     // Map IDs back to the full residence objects (preserving AI ranking order)
     const results = ids
