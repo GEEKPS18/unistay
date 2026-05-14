@@ -1,16 +1,14 @@
-const db = require("../models");
-const OpenAI = require("openai");
+const db = require('../models');
+const OpenAI = require('openai');
 
 const { Residence, ResidenceImage } = db;
 
 /**
- * ==================================================
- * ADD RESIDENCE
- * ==================================================
- * Creates a new residence for the authenticated owner
+ * @desc    Add a new residence listing
+ * @route   POST /residence/add
+ * @access  Protected (owner)
  */
-
-const addResidence = async (req, res) => {
+const addResidence = async (req, res, next) => {
   try {
     const {
       title, description, housing_type, available_for, neighborhood,
@@ -18,24 +16,6 @@ const addResidence = async (req, res) => {
       distance_from_university, capacity, rooms, bathrooms,
       wifi, parking, security,
     } = req.body;
-
-    /* ================= VALIDATION ================= */
-
-    if (!address || !rent_price) {
-      return res.status(400).json({
-        success: false,
-        message: "Address and rent price are required",
-      });
-    }
-
-    if (Number(rent_price) <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Rent price must be greater than zero",
-      });
-    }
-
-    /* ================= CREATE RESIDENCE ================= */
 
     const residence = await Residence.create({
       title: title || null,
@@ -52,196 +32,57 @@ const addResidence = async (req, res) => {
       capacity: capacity || null,
       rooms: rooms || null,
       bathrooms: bathrooms || null,
+      // req.body values arrive as strings from multipart/form-data, so we normalise
       wifi: wifi === true || wifi === 'true',
       parking: parking === true || parking === 'true',
       security: security === true || security === 'true',
       owner_id: req.user.id,
     });
 
-    /* ================= SAVE IMAGES ================= */
-
     if (req.files && req.files.length > 0) {
       const images = req.files.map((file) => ({
         image_url: `/uploads/residences/${file.filename}`,
-
         res_id: residence.res_id,
       }));
-
       await ResidenceImage.bulkCreate(images);
     }
 
-    /* ================= RESPONSE ================= */
-
     return res.status(201).json({
       success: true,
-
-      message: "Residence added successfully",
-
+      message: 'Residence added successfully',
       residence,
     });
   } catch (error) {
-    console.error("Add Residence Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Internal server error",
-    });
+    next(error);
   }
 };
 
 /**
- * ==================================================
- * GET ALL RESIDENCES
- * ==================================================
- * Returns all available residences
+ * @desc    Get all available residences
+ * @route   GET /residence
+ * @access  Public
  */
-
-const getAllResidences = async (req, res) => {
+const getAllResidences = async (req, res, next) => {
   try {
-    const residences = await Residence.findAll(
-      
-      {
-      include: [
-        {
-          model:ResidenceImage
-          
-        },
-      ],
-    }
-  
-  );
-
-    return res.status(200).json({
-      success: true,
-
-      residences,
+    const residences = await Residence.findAll({
+      include: [{ model: ResidenceImage }],
     });
+
+    return res.status(200).json({ success: true, residences });
   } catch (error) {
-    console.error("Get Residences Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Internal server error",
-    })
+    next(error);
   }
 };
 
 /**
- * ==================================================
- * UPDATE RESIDENCE
- * ==================================================
- * Allows owner to update their residence
+ * @desc    Get a single residence by ID
+ * @route   GET /residence/:id
+ * @access  Public
  */
-
-const updateResidence = async (req, res) => {
+const getResidenceById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-
-    const residence = await Residence.findByPk(id);
-
-    /* ================= CHECK RESIDENCE ================= */
-
-    if (!residence) {
-      return res.status(404).json({
-        success: false,
-
-        message: "Residence not found",
-      });
-    }
-
-    /* ================= OWNER CHECK ================= */
-
-    if (residence.owner_id !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-
-        message: "Access denied",
-      });
-    }
-
-    /* ================= UPDATE ================= */
-
-    await residence.update(req.body);
-
-    return res.status(200).json({
-      success: true,
-
-      message: "Residence updated successfully",
-
-      residence,
-    });
-  } catch (error) {
-    console.error("Update Residence Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Internal server error",
-    });
-  }
-};
-
-/**
- * ==================================================
- * DELETE RESIDENCE
- * ==================================================
- * Allows owner to delete their residence
- */
-
-const deleteResidence = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const residence = await Residence.findByPk(id);
-
-    /* ================= CHECK RESIDENCE ================= */
-
-    if (!residence) {
-      return res.status(404).json({
-        success: false,
-
-        message: "Residence not found",
-      });
-    }
-
-    /* ================= OWNER CHECK ================= */
-
-    if (residence.owner_id !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-
-        message: "Access denied",
-      });
-    }
-
-    /* ================= DELETE ================= */
-
-    await residence.destroy();
-
-    return res.status(200).json({
-      success: true,
-
-      message: "Residence deleted successfully",
-    });
-  } catch (error) {
-    console.error("Delete Residence Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Internal server error",
-    });
-  }
-};
-
-const getResidenceById = async (req, res) => {
-  try {
-    const { id } = req.params;
-
     const residence = await Residence.findOne({
-      where: { res_id: id },
+      where: { res_id: req.params.id },
       include: [{ model: ResidenceImage }],
     });
 
@@ -252,26 +93,90 @@ const getResidenceById = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      residence,
-    });
+    return res.status(200).json({ success: true, residence });
   } catch (error) {
-    console.error('Get Residence By ID Error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-    });
+    next(error);
   }
 };
 
-const aiSearch = async (req, res) => {
+/**
+ * @desc    Update a residence (owner only, must own the listing)
+ * @route   PUT /residence/:id
+ * @access  Protected (owner)
+ */
+const updateResidence = async (req, res, next) => {
+  try {
+    const residence = await Residence.findByPk(req.params.id);
+
+    if (!residence) {
+      return res.status(404).json({
+        success: false,
+        message: 'Residence not found',
+      });
+    }
+
+    // Prevent an owner from editing another owner's listing
+    if (residence.owner_id !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not authorised to edit this listing',
+      });
+    }
+
+    await residence.update(req.body);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Residence updated successfully',
+      residence,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Delete a residence (owner only, must own the listing)
+ * @route   DELETE /residence/:id
+ * @access  Protected (owner)
+ */
+const deleteResidence = async (req, res, next) => {
+  try {
+    const residence = await Residence.findByPk(req.params.id);
+
+    if (!residence) {
+      return res.status(404).json({
+        success: false,
+        message: 'Residence not found',
+      });
+    }
+
+    if (residence.owner_id !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not authorised to delete this listing',
+      });
+    }
+
+    await residence.destroy();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Residence deleted successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    AI-powered property search using OpenAI
+ * @route   POST /residence/ai-search
+ * @access  Protected (any logged-in user)
+ */
+const aiSearch = async (req, res, next) => {
   try {
     const { query } = req.body;
-
-    if (!query || !query.trim()) {
-      return res.status(400).json({ success: false, message: "Query is required" });
-    }
 
     const residences = await Residence.findAll({
       where: { is_available: true },
@@ -282,6 +187,8 @@ const aiSearch = async (req, res) => {
       return res.status(200).json({ success: true, results: [] });
     }
 
+    // Build a minimal summary of each property to send to the AI.
+    // Keeping this small reduces token usage and cost.
     const list = residences.map((r) => ({
       res_id: r.res_id,
       title: r.title,
@@ -309,25 +216,27 @@ Student's request: "${query}"
 Available properties (JSON):
 ${JSON.stringify(list, null, 2)}
 
-Return ONLY a valid JSON array of the top 3 best-matching res_id values, ordered by best match. Example: [4, 12, 7]. No explanation, no markdown, just the JSON array.`;
+Return ONLY a valid JSON array of the top 3 best-matching res_id values, ordered by best match.
+Example: [4, 12, 7]
+No explanation, no markdown — just the JSON array.`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
       temperature: 0.2,
     });
 
     const content = completion.choices[0].message.content.trim();
     const ids = JSON.parse(content);
 
+    // Map IDs back to the full residence objects (preserving AI ranking order)
     const results = ids
       .map((id) => residences.find((r) => r.res_id === id))
       .filter(Boolean);
 
     return res.status(200).json({ success: true, results });
   } catch (error) {
-    console.error("AI Search Error:", error);
-    return res.status(500).json({ success: false, message: "AI search failed" });
+    next(error);
   }
 };
 

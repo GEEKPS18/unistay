@@ -57,8 +57,13 @@ function Home() {
       setLoadingAI(true);
       const res = await api.post("/residence/ai-search", { query });
       navigate("/ai-results", { state: { results: res.data.results, query } });
-    } catch {
-      alert("فشل البحث الذكي، يرجى المحاولة لاحقاً");
+    } catch (error) {
+      if (error.response?.status === 401) {
+        alert("يجب تسجيل الدخول أولاً لاستخدام البحث الذكي");
+        navigate("/student");
+      } else {
+        alert("فشل البحث الذكي، يرجى المحاولة لاحقاً");
+      }
     } finally {
       setLoadingAI(false);
     }

@@ -11,7 +11,7 @@ const InputField = (props) => {
     if (!props.residenceId) return
     const getData=async()=>{
       const res = await api.get(`/residence/${props.residenceId}/Ratings`)
-      setData(res.data)
+      setData(res.data.ratings || [])
     }
     getData()
   },[props.residenceId])

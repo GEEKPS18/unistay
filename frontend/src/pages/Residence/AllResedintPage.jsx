@@ -64,11 +64,11 @@ const AllResidence = () => {
                         {data.length===0 &&<div className="d-flex justify-content-center align-items-center">
                             لا يوجد سكنات حاليا
                         </div>}
-                        
+
                         {data.map((hotel) => (
-                            <div className="col-6 col-md-4 col-lg-4 mb-4" key={hotel?.id}>
+                            <div className="col-6 col-md-4 col-lg-4 mb-4" key={hotel?.res_id}>
                                 <div className="card me-2" style={{ cursor: "pointer", color: "#1b2a41" }} >
-                                    <img src={hotel?.ResidenceImages[0]?.image_url} style={{ aspectRatio: "14/15" }} alt={hotel?.title || hotel?.address} />
+                                    <img src={hotel?.ResidenceImages[0]?.image_url ? `http://localhost:3000${hotel.ResidenceImages[0].image_url}` : ''} style={{ aspectRatio: "14/15" }} alt={hotel?.title || hotel?.address} />
                                     <div className="card-body bg-light">
                                         <h5 className="card-title">{hotel?.title || hotel?.address}</h5>
                                         <div className="d-flex w-100 justify-content-around ">
@@ -90,8 +90,8 @@ const AllResidence = () => {
                                                 <i className="" class="bi bi-heart" style={{fontSize:"30px"}}></i>
                                             </button> */}
                                             
-                                            <div onClick={() => setLiked(prev => ({ ...prev, [hotel.id]: !prev[hotel.id] }))}>
-                                                {liked[hotel.id]
+                                            <div onClick={() => setLiked(prev => ({ ...prev, [hotel.res_id]: !prev[hotel.res_id] }))}>
+                                                {liked[hotel.res_id]
                                                     ? <i className="bi bi-heart-fill" style={{ fontSize: "35px", position:"relative",bottom:"3.5px" }}></i>
                                                     : <i className="bi bi-heart" style={{ fontSize: "35px", position:"relative",bottom:"3.5px"  }}></i>
                                                 }

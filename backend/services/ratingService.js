@@ -1,148 +1,77 @@
-const db=require('../models')
+const db = require('../models');
 
-const getRatings=async()=>{
-    const rate=await db.Rating.findAll()
-    return rate
-}
+/**
+ * Returns all ratings for a specific residence.
+ * Filtered by res_id so students only see reviews for the property they are viewing.
+ */
+const getRatings = async (residenceId) => {
+  return db.Rating.findAll({ where: { res_id: residenceId } });
+};
 
-const postRating=async(data)=>{
-// const {userId,resId,rateDate,starCount,comment,issues}
-    const rate=await db.Rating.create({
-        userId:data.userId,
-        residentId:data.residentId,
-        rateDate:data.rateDate,
-        starCount:data.starCount,
-        comment:data.comment,
-        issues:data.issues
-        
-    })
-    await rate.save()
-    return rate
-}
+/**
+ * Creates a new rating entry.
+ * The controller passes validated data — no extra checks needed here.
+ */
+const postRating = async (data) => {
+  return db.Rating.create({
+    user_id: data.user_id,
+    res_id: data.res_id,
+    rateDate: new Date(),
+    starCount: data.starCount || null,
+    comment: data.comment || null,
+    issues: data.issues || null,
+  });
+};
 
-const deleteRating=async(data)=>{
-    const rate=await db.Rating.findByPk(data.id)
-    if (!rate){
-        return null
-    }
-    await rate.destroy()
+/**
+ * Deletes a rating by its primary key.
+ * Returns null when the rating does not exist so the controller can send a 404.
+ */
+const deleteRating = async (ratingId) => {
+  const rating = await db.Rating.findByPk(ratingId);
+  if (!rating) return null;
+  await rating.destroy();
+  return true;
+};
 
-    return true;
-}
+/**
+ * Clears the comment field on a rating (sets it to null).
+ * Returns null when the rating does not exist.
+ */
+const deleteComment = async (ratingId) => {
+  const rating = await db.Rating.findByPk(ratingId);
+  if (!rating) return null;
+  await rating.update({ comment: null });
+  return true;
+};
 
-const deleteComment=async(data)=>{
-    const rate =await db.Rating.findByPk(data.id)
-    if(!rate){
-        return null
-    }
+/**
+ * Clears the issues field on a rating (sets it to null).
+ * Returns null when the rating does not exist.
+ */
+const deleteIssue = async (ratingId) => {
+  const rating = await db.Rating.findByPk(ratingId);
+  if (!rating) return null;
+  await rating.update({ issues: null });
+  return true;
+};
 
-    await rate.update({
-        comment:null
-    })
+/**
+ * Updates allowed fields on a rating (starCount, comment, issues).
+ * Returns null when the rating does not exist.
+ */
+const updateRating = async (ratingId, data) => {
+  const rating = await db.Rating.findByPk(ratingId);
+  if (!rating) return null;
+  await rating.update(data);
+  return rating;
+};
 
-
-}
-const deleteIssue=async(data)=>{
-      const rate =await db.Rating.findByPk(data.id)
-    if(!rate){
-        return null
-    }
-
-    await rate.update({
-        issues:null
-    })
-
-
-
-}
-
-
-
-
-const updateRating=async(parameter,data)=>{
-    const rate=await db.Rating.findByPk(parameter.id)
-    if(!rate){
-        return null;
-    }
-    
-    await rate.update(data)
-   
-
-    return true
-}
-
-
-module.exports={
-    getRatings,
-    postRating,
-    deleteRating,
-    deleteComment,
-    deleteIssue,
-    updateRating
-
-}
-
-
-
-
-
-// const deleteStarCount=async()=>{
-    
-//   const rate =await db.Rating.findByPk(data.id)
-//     if(!rate){
-//         return null
-//     }
-
-//     await rate.update({
-//         starCount:null
-//     })
-
-
-// }
-
-// const updateComment=async(data)=>{
-//     const rate=await db.Rating.findByPk(data.id)
-//     if(!rate){
-//         return null;
-//     }
-    
-//     await rate.update({
-//         comment:data.comment,
-
-//     })
-//     await rate.save()
-
-//     return true
-// }
-
-
-
-
-
-// const updateStarCount=async(data)=>{
-//     const rate=await db.Rating.findByPk(data.id)
-//     if(!rate){
-//         return null;
-//     }
-    
-//     await rate.update(data)
-//     await rate.save()
-
-//     return true
-// }
-
-
-// const updateIssue=async(data)=>{
-//     const rate=await db.Rating.findByPk(data.id)
-//     if(!rate){
-//         return null;
-//     }
-    
-//     await rate.update({
-//         issues:data.issues,
-
-//     })
-//     await rate.save()
-
-//     return true
-// }
+module.exports = {
+  getRatings,
+  postRating,
+  deleteRating,
+  deleteComment,
+  deleteIssue,
+  updateRating,
+};

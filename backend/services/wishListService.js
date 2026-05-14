@@ -1,33 +1,34 @@
-const db=require('../models')
+const db = require('../models');
 
-const getWishedList=async()=>{
-    const wish=await db.WishList.findAll()
-    return wish
-}
+/**
+ * Returns all wishlist entries for a specific student.
+ */
+const getWishedList = async (studentId) => {
+  return db.WishList.findAll({ where: { user_Id: studentId } });
+};
 
+/**
+ * Adds a residence to a student's wishlist.
+ */
+const addToWishList = async ({ user_Id, res_id }) => {
+  return db.WishList.create({ user_Id, res_id, liked: true });
+};
 
-const addToWishList=async(Data)=>{
-    const wish =await db.WishList.create({
-        liked:Data.liked,
-        userId:Data.userId,
-        residentId:Data.residentId
-    })
-    return wish
-}
+/**
+ * Removes a wishlist entry by student + residence combination.
+ * Returns null when no matching entry exists.
+ */
+const removeFromWishList = async ({ studentId, residenceId }) => {
+  const wish = await db.WishList.findOne({
+    where: { user_Id: studentId, res_id: residenceId },
+  });
+  if (!wish) return null;
+  await wish.destroy();
+  return true;
+};
 
-const removeFromWishList=async(Data)=>{
-    const wish=await db.WishList.findByPk(Data.id)
-    if(!wish){
-        return null
-    }
-    await wish.destroy()
-    return true
-
-}
-
-
-module.exports={
-    getWishedList,
-    addToWishList,
-    removeFromWishList
-}
+module.exports = {
+  getWishedList,
+  addToWishList,
+  removeFromWishList,
+};

@@ -9,6 +9,8 @@ import Feedback from "../../components/Comments/feedback.jsx";
 import ImagesCarousel from "../../components/Carousel/Carousel.jsx";
 import api from "../../lib/api.js";
 
+const BASE_URL = 'http://localhost:3000';
+
 const ResDetails = () => {
     const { id } = useParams()
     const [hotel, setHotel] = useState(null)
@@ -49,15 +51,6 @@ const ResDetails = () => {
         setSelected(i)
     }
 
-    const Amenities = [
-        "Wi-Fi",
-        "Air Conditioning",
-        "Swimming Pool",
-        "Gym",
-        "Room Service",
-        "Parking"
-    ]
-
     let restImages = 0;
     
     if (images.length - 5 === 0) {
@@ -95,7 +88,7 @@ const ResDetails = () => {
                         right: "5%",
                         transform: "translate(-5%)"
                     }}>
-                        <ImagesCarousel image={images[0]?.image_url} />
+                        <ImagesCarousel image={images[0]?.image_url ? `${BASE_URL}${images[0].image_url}` : ''} />
                     </div>
                 </div>
             )}
@@ -128,7 +121,7 @@ const ResDetails = () => {
                         style={{ cursor: "pointer" }}
                         onClick={() => handleSelectedPic(index + 1)}
                     >
-                        <img src={img?.image_url} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <img src={img?.image_url ? `${BASE_URL}${img.image_url}` : ''} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     </div>
                 ))}
 
@@ -142,7 +135,7 @@ const ResDetails = () => {
                     onClick={() => handleSelectedPic(4)}
                 >
                     <img
-                        src={images[4]?.image_url}
+                        src={images[4]?.image_url ? `${BASE_URL}${images[4].image_url}` : ''}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
 
@@ -183,7 +176,7 @@ const ResDetails = () => {
                     <div className="col-12 col-md-6 col-lg-7 me-2">
                         <div className="card">
                             <img
-                                src={images[selected]?.image_url}
+                                src={images[selected]?.image_url ? `${BASE_URL}${images[selected].image_url}` : ''}
                                 style={{
                                     aspectRatio: "5/4",
                                     height: "58vh"
@@ -234,7 +227,7 @@ const ResDetails = () => {
                                         }}
                                     >
                                         <img
-                                            src={img?.image_url}
+                                            src={img?.image_url ? `${BASE_URL}${img.image_url}` : ''}
                                             className="card"
                                             style={{ height: "100%", pointerEvents: "none" }}
                                         />
@@ -256,32 +249,29 @@ const ResDetails = () => {
                             <i className="bi bi-heart" style={{ fontSize: "35px", position: "relative", bottom: "10px" }} />
                             <div className="d-flex" style={{ alignItems: "baseline", color: "#1b2a41" }}>
                                 <p style={{ color: "gray" }}>شهريا/</p>
-                                <h2>300JD</h2>
+                                <h2>{hotel.rent_price} ₪</h2>
                             </div>
                         </div>
 
                         <h5 style={{ color: "#1b2a41" }}>الوصف</h5>
                         <p style={{ color: "gray" }}>
-                            A hotel is a commercial establishment that provides temporary
-                            accommodation, meals, and various services to guests
-                            such as travelers and tourists. Hotels typically offer a range
-                            of room types, from standard rooms to luxury suites, along with
-                            facilities like restaurants, reception services, housekeeping, Wi-Fi,
-                            and sometimes recreational amenities such as swimming pools, gyms, and
-                            conference halls. The main goal of a hotel is to ensure comfort, convenience
-                            , and a pleasant experience for its guests during their stay.
+                            {hotel.description || "لا يوجد وصف لهذا السكن"}
                         </p>
 
-                        <h5 style={{ color: "#1b2a41" }}>Amenities</h5>
+                        <h5 style={{ color: "#1b2a41" }}>المرافق</h5>
                         <div className="d-flex" style={{ flexWrap: "wrap" }}>
-                            {Amenities.map((A) => (
-                                <div
-                                    className="bg-light p-2 m-2"
-                                    style={{ margin: "5", borderRadius: "15px", color: "#1b2a41" }}
-                                >
-                                    {A}
-                                </div>
-                            ))}
+                            {hotel.wifi && (
+                                <div className="bg-light p-2 m-2" style={{ borderRadius: "15px", color: "#1b2a41" }}>WiFi</div>
+                            )}
+                            {hotel.parking && (
+                                <div className="bg-light p-2 m-2" style={{ borderRadius: "15px", color: "#1b2a41" }}>موقف سيارات</div>
+                            )}
+                            {hotel.security && (
+                                <div className="bg-light p-2 m-2" style={{ borderRadius: "15px", color: "#1b2a41" }}>أمن وحراسة</div>
+                            )}
+                            {!hotel.wifi && !hotel.parking && !hotel.security && (
+                                <p style={{ color: "gray" }}>لا توجد مرافق مدرجة</p>
+                            )}
                         </div>
                     </div>
                 </div>
